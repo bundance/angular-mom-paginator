@@ -345,10 +345,13 @@ angular.module('momUI.momPaginator', [])
              */
             function _getSortIconLookupTable(sortIcons){
 
+                var sortIconsClone = angular.copy(sortIcons || {});
+
+
                 return {
-                    'true': sortIcons.sortIconUp,
-                    'false': sortIcons.sortIconDown,
-                    'none': sortIcons.sortIconNone
+                    'true': sortIconsClone.sortIconUp,
+                    'false': sortIconsClone.sortIconDown,
+                    'none': sortIconsClone.sortIconNone
                 };
             }
 

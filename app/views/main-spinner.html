@@ -29,17 +29,17 @@
                 <button class="btn btn-primary mom-toggle" ng-click="$broadcast('startSpinner', {spinnerId: 'followers'})">
                     Followers
                     <mom-spinner  mom-spinner-id="followers" mom-spinner-start-icon="'glyphicon glyphicon-resize-vertical'"
-                                  mom-spinner-fn="model.toggleSort" mom-spinner-fn-params="{'columnName': 'followers'}"></mom-spinner>
+                                  mom-spinner-fn="toggleSort" mom-spinner-fn-params="{'columnName': 'followers'}"></mom-spinner>
                 </button>
                 <button class="btn btn-primary mom-toggle" ng-click="$broadcast('startSpinner', {spinnerId: 'joined'})">
                     Joined
                     <mom-spinner  mom-spinner-id="joined" mom-spinner-start-icon="'glyphicon glyphicon-resize-vertical'"
-                                  mom-spinner-fn="model.toggleSort" mom-spinner-fn-params="{'columnName': 'joined'}"></mom-spinner>
+                                  mom-spinner-fn="toggleSort" mom-spinner-fn-params="{'columnName': 'joined'}"></mom-spinner>
                 </button>
                 <button class="btn btn-primary mom-toggle" ng-click="$broadcast('startSpinner', {spinnerId: 'repositories'})">
                     Repositories
                     <mom-spinner  mom-spinner-id="repositories" mom-spinner-start-icon="'glyphicon glyphicon-resize-vertical'"
-                                  mom-spinner-fn="model.toggleSort" mom-spinner-fn-params="{'columnName': 'repositories'}"></mom-spinner>
+                                  mom-spinner-fn="toggleSort" mom-spinner-fn-params="{'columnName': 'repositories'}"></mom-spinner>
                 </button>
             </span>
         </div>
@@ -53,7 +53,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="user in model.paginator.currentPageItems">
+            <tr ng-repeat="user in paginator.currentPageItems()">
                 <td>{{user.login}}</td>
                 <td><img src="{{user.avatar_url}}" /></td>
                 <td><a href="{{user.html_url}}">{{user.html_url}}</a></td>
@@ -66,19 +66,19 @@
 
         <div class="m-pagination-btns">
             <button class="btn btn-mini btn-primary sdr-pagination-prev-btn" ng-click="$broadcast('startSpinner', {spinnerId: 'first'})">
-                <mom-spinner  mom-spinner-id="first" mom-spinner-fn="model.first"></mom-spinner>
+                <mom-spinner  mom-spinner-id="first" mom-spinner-fn="paginator.first"></mom-spinner>
                 << First
             </button>
             <button class="btn btn-mini btn-primary sdr-pagination-prev-btn" ng-click="$broadcast('startSpinner', {spinnerId: 'prev'})">
-                <mom-spinner  mom-spinner-id="prev" mom-spinner-fn="model.prev"></mom-spinner>
+                <mom-spinner  mom-spinner-id="prev" mom-spinner-fn="paginator.prev"></mom-spinner>
                 < Prev
             </button>
             <button class="btn btn-mini btn-primary sdr-pagination-prev-btn" ng-click="$broadcast('startSpinner', {spinnerId: 'next'})">
-                <mom-spinner  mom-spinner-id="next" mom-spinner-fn="model.next"></mom-spinner>
+                <mom-spinner  mom-spinner-id="next" mom-spinner-fn="paginator.next"></mom-spinner>
                 Next >
             </button>
             <button class="btn btn-mini btn-primary sdr-pagination-prev-btn" ng-click="$broadcast('startSpinner', {spinnerId: 'last'})">
-                <mom-spinner  mom-spinner-id="last" mom-spinner-fn="model.last"></mom-spinner>
+                <mom-spinner  mom-spinner-id="last" mom-spinner-fn="paginator.last"></mom-spinner>
                 Last >>
             </button>
         </div>
@@ -86,7 +86,7 @@
             <label class="inline-select-text">Jump to page: </label>
             <select class="inline-select" ng-init="page=model.pages[0]" ng-model="model.page" ng-change="$broadcast('startSpinner', {spinnerId: 'select_page'})"
                     ng-options="page for page in model.pages"></select>
-                <mom-spinner  mom-spinner-id="select_page" mom-spinner-fn="model.getPage" mom-spinner-fn-params="{'pageNum': model.page}"></mom-spinner>
+                <mom-spinner  mom-spinner-id="select_page" mom-spinner-fn="getPage" mom-spinner-fn-params="{'pageNum': model.page}"></mom-spinner>
         </div>
 
 
@@ -94,5 +94,5 @@
 </div>
 
 <div class="footer">
-    <p>Part of the Angular Momentum library by Mike Evans, BunDance Media</p>
+    <p>Part of the Angular Momentum library by Mike Evans, Codernetic Ltd</p>
 </div>

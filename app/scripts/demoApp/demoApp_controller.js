@@ -1,15 +1,16 @@
 'use strict';
 
 angular.module('angularMomPaginatorApp')
-    .controller('PaginatorCtrl', ['$scope', 'momPaginator', 'gitHubService', function($scope, momPaginator, gitHubService){
+    .controller('DemoAppCtrl', ['$scope', 'momPaginator', 'gitHubData', function($scope, momPaginator, gitHubData){
 
+        // Set $sope's properties
         $scope.model = {
             page: 1,
             pages: []
         };
 
         $scope.paginator = momPaginator({
-            rstSvc: gitHubService,
+            rstSvc: gitHubData,
             initialPage: 5,
             itemsPerPage: 10,
             sortIcons: {
@@ -19,13 +20,16 @@ angular.module('angularMomPaginatorApp')
             }
         });
 
-        $scope.paginator.initialise()
-            .then(_getPage);
 
-
+        // Set watches
         $scope.$watch('model.page', function(newPageNum){
             _getPage(newPageNum);
         });
+
+
+        // Initialise the paginator
+        $scope.paginator.initialise()
+            .then(_getPage);
 
 
         //////////////////

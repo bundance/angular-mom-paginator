@@ -59,7 +59,7 @@ Upon creation, the momPaginator will immediately call its `getPage()` method to 
   You can use momPaginator's `promise` property to access this data once it's loaded, as follows:
 
 ```
-$scope.model.paginator = momPaginator(gitHubService, 5, 1, {sortIconUp: 'glyphicon glyphicon-arrow-up',
+$scope.model.paginator = momPaginator(gitHubData, 5, 1, {sortIconUp: 'glyphicon glyphicon-arrow-up',
                sortIconDown: 'glyphicon glyphicon-arrow-down',
                sortIconNone: 'glyphicon glyphicon-resize-vertical'});
            $scope.model.paginator.promise
@@ -148,7 +148,7 @@ The example in this repository includes a ReST service called rest.gitHubAPI, wh
 GitHub API. If you look at the code in app/shared/restAPI.js, you'll see rest.gitHubAPI defined as two services:
 
 * `gitHubREST` - a simple wrapper around $resource, defined with the parameters specified by GitHub to access its API.
-* `gitHubService` - the ReST service required by momPaginator, complete with the getData and getTotalItemsCount functions.
+* `gitHubData` - the ReST service required by momPaginator, complete with the getData and getTotalItemsCount functions.
 
 ###ReST Service getData() Parameters###
 
@@ -191,8 +191,8 @@ angular.module('angularMomPaginatorApp', [
         'ngResource',
         'rest.ReSTService',   // change this to whatever ReST service you're using
         'momUI.momPaginator'])
- .controller('PaginatorCtrl', ['$scope', 'momPaginator', 'gitHubService', function($scope, momPaginator, gitHubService){
-        $scope.model.paginator = momPaginator(gitHubService, 5, 1, {sortIconUp: 'glyphicon glyphicon-arrow-up',
+ .controller('DemoAppCtrl', ['$scope', 'momPaginator', 'gitHubData', function($scope, momPaginator, gitHubData){
+        $scope.model.paginator = momPaginator(gitHubData, 5, 1, {sortIconUp: 'glyphicon glyphicon-arrow-up',
             sortIconDown: 'glyphicon glyphicon-arrow-down', sortIconNone: 'glyphicon glyphicon-resize-vertical'});
         $scope.model.paginator.promise
             .then(function(){
@@ -234,12 +234,12 @@ To see a complete example implementation, clone the repo and navigate to:
 
 ###Files###
 
-* The standard momPaginator home page is implemented in `app/views/main.html` and uses the `PaginatorCtrl`
+* The standard momPaginator home page is implemented in `app/views/main.html` and uses the `DemoAppCtrl`
  controller (defined in `angular-mom-paginator/app/scripts/app.js`)
-* The version with the spinner is implemented in `app/views/main-spinner.html` and uses the `PaginatorSpinnerCtrl`
+* The version with the spinner is implemented in `app/views/main-spinner.html` and uses the `DemoAppSpinnerCtrl`
  controller (defined in `angular-mom-paginator/app/scripts/app.js`)
 * The Paginator service is defined in 'angular-mom-paginator/app/scripts/services/paginator.js`
-* The ReST Service is defined in `angular-mom-paginator/app/scripts/shared/restAPIs.js`
+* The ReST Service is defined in `angular-mom-paginator/app/scripts/shared/gitHubAPI_module.js`
 
 ###Tests###
 You'll need the Karma test runner to run the tests, which can be found in `angular-mom-paginator/test/spec`. Tests for

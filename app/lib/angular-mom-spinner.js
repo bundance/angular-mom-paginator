@@ -90,7 +90,7 @@ angular.module('momUI', [])
             momSpinnerTag: '@momSpinnerTag',
             momSpinnerId: '@momSpinnerId'
         },
-        // The controller is shared with all other momSpinner directives
+        // The controller is gitHubAPI with all other momSpinner directives
         controller: function($scope, $element, $attrs){
             $scope.momSpinnerClicked = function(args){
 

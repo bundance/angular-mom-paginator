@@ -6,8 +6,8 @@ describe('Paginator Service', function() {
 
     var paginator;
 
-    beforeEach(inject(function(momPaginator, gitHubService) {
-        paginator = momPaginator(gitHubService);
+    beforeEach(inject(function(momPaginator, gitHubData) {
+        paginator = momPaginator(gitHubData);
     }));
 
 
@@ -17,7 +17,7 @@ describe('Paginator Service', function() {
 describe('Service: gitHubAPI', function () {
 
     // Setup $httpBackend mocks
-    var $httpBackend, $rootScope, createController, mockedJsonData, mockedTotalCountJsonData, paginatorCtrl,
+    var $httpBackend, $rootScope, createController, mockedJsonData, mockedTotalCountJsonData, DemoAppCtrl,
         $controller, mockedJsonData_3Records, mockedTotalCount_3Records;
 
     // load the modules
@@ -45,29 +45,29 @@ describe('Service: gitHubAPI', function () {
         expect(gitHubREST).toBeDefined();
     }));
 
-    it('should contain a gitHubService service', inject(function(gitHubService) {
-        expect(gitHubService).toBeDefined();
+    it('should contain a gitHubData service', inject(function(gitHubData) {
+        expect(gitHubData).toBeDefined();
     }));
 
 
     /***
-     * Test the gitHubService.getPage() function
+     * Test the gitHubData.getPage() function
      */
-    describe("gitHubService.getData() function", function(){
+    describe("gitHubData.getData() function", function(){
         var paginator;
 
-        it("should format a url with per_page=3 in the querystring when getData(3) is called", inject(function(momPaginator, gitHubService) {
+        it("should format a url with per_page=3 in the querystring when getData(3) is called", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=3&q=followers:%3E%3D0').respond(mockedTotalCount_3Records.fakeData);
             $httpBackend.expectGET("https://api.github.com/search/users?page=1&per_page=3&q=followers:%3E%3D0");
 
-            gitHubService.getData(3);
+            gitHubData.getData(3);
             $httpBackend.flush();
         }));
 
-        it("should retrieve 3 items of data from fakeData when itemsPerPage is set to 3", inject(function(momPaginator, gitHubService) {
+        it("should retrieve 3 items of data from fakeData when itemsPerPage is set to 3", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=3&q=followers:%3E%3D0').respond(mockedTotalCount_3Records.fakeData);
 
-            gitHubService.getData(3).then(function(items){
+            gitHubData.getData(3).then(function(items){
                 expect(items.length).toEqual(3);
             });
             $httpBackend.flush();
@@ -82,7 +82,7 @@ describe('Service: gitHubAPI', function () {
     describe("momPaginator.getPage() function", function(){
         var paginator;
 
-        it("should retrieve 10 items of data from fakeData when first intialised", inject(function(momPaginator, gitHubService) {
+        it("should retrieve 10 items of data from fakeData when first intialised", inject(function(momPaginator, gitHubData) {
             // getTotalItemsCount URL:
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
@@ -90,7 +90,7 @@ describe('Service: gitHubAPI', function () {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=10&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
 
             paginator.promise.then(function(){
                 expect(paginator.pageExists(paginator.currentPageNum + 1)).toBeTruthy();
@@ -102,11 +102,11 @@ describe('Service: gitHubAPI', function () {
         }));
 
         it("should set currentPageItems to 3 items when only 3 items are returned (e.g. when downloading the last set of data",
-            inject(function(momPaginator, gitHubService) {
+            inject(function(momPaginator, gitHubData) {
                 // getTotalItemsCount URL:
                 $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
-                paginator = momPaginator(gitHubService);
+                paginator = momPaginator(gitHubData);
                 // Flush paginator's initial call to https://api.github.com/users (we don't care about testing this here)
                 $httpBackend.flush();
 
@@ -123,11 +123,11 @@ describe('Service: gitHubAPI', function () {
                 $httpBackend.flush();
             }));
 
-        it("should return the response's error message when an error occurs", inject(function(momPaginator, gitHubService) {
+        it("should return the response's error message when an error occurs", inject(function(momPaginator, gitHubData) {
             // getTotalItemsCount URL:
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
 
             paginator.promise.then(function(){
                 $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=10&q=followers:%3E%3D0').respond(400, 'bad data');
@@ -138,11 +138,11 @@ describe('Service: gitHubAPI', function () {
             $httpBackend.flush();
         }));
 
-        it("should return an empty array when pageExists returns false", inject(function(momPaginator, gitHubService) {
+        it("should return an empty array when pageExists returns false", inject(function(momPaginator, gitHubData) {
             // getTotalItemsCount URL:
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
 
             // getData URL:
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=10&q=followers:%3E%3D0').respond(mockedTotalCount_3Records.fakeData);
@@ -162,9 +162,9 @@ describe('Service: gitHubAPI', function () {
     describe("momPaginator.getTotalPageCount() function", function(){
         var paginator;
 
-        beforeEach(inject(function(momPaginator, gitHubService){
+        beforeEach(inject(function(momPaginator, gitHubData){
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
         }));
 
         it("should return 0 pages when there are 0 items", function() {
@@ -206,28 +206,28 @@ describe('Service: gitHubAPI', function () {
     describe("Paginator.getTotalItemsCount() function", function(){
         var paginator;
 
-        it("should have a totalItemsCount mock value of 1000 (from fakeData) when first intialised", inject(function(momPaginator, gitHubService) {
+        it("should have a totalItemsCount mock value of 1000 (from fakeData) when first intialised", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
             $httpBackend.flush();
             expect(paginator.totalItemsCount).toEqual(1000);
 
         }));
 
-        it("should have a totalItemsCount of zero when an error occurs in getTotalItemsCount", inject(function(momPaginator, gitHubService) {
+        it("should have a totalItemsCount of zero when an error occurs in getTotalItemsCount", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(400, "bad data");
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
             $httpBackend.flush();
 
             expect(paginator.totalItemsCount).toEqual(0);
         }));
 
-        it("should return a count of 0 when an error occurs in getTotalItemsCount", inject(function(momPaginator, gitHubService) {
+        it("should return a count of 0 when an error occurs in getTotalItemsCount", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(400, "bad data");
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
             paginator.getTotalItemsCount().then(function(count){
                 expect(count).toEqual(0);
             });
@@ -245,29 +245,29 @@ describe('Service: gitHubAPI', function () {
 
         var paginator;
 
-        it("should have more data when first called", inject(function(momPaginator, gitHubService) {
+        it("should have more data when first called", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
             $httpBackend.flush();
 
             expect(paginator.pageExists(1)).toBeTruthy();
         }));
 
 
-        it("should not have more data with total_count set to 0", inject(function(momPaginator, gitHubService) {
+        it("should not have more data with total_count set to 0", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond({"total_count": 0});
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
             $httpBackend.flush();
 
             expect(paginator.pageExists(0)).toBeFalsy();
         }));
 
-        it("should have more data with total_count set to 100, currentPageNum = 3, currentPageItems.length = 10", inject(function(momPaginator, gitHubService) {
+        it("should have more data with total_count set to 100, currentPageNum = 3, currentPageItems.length = 10", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond({"total_count": 100});
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
             paginator.currentPageNum = 3;
             paginator.currentPageItems = [1,1,1,1,1,1,1,1,1,1];
             $httpBackend.flush();
@@ -276,10 +276,10 @@ describe('Service: gitHubAPI', function () {
         }));
 
 
-        it("should NOT have more data with total_count set to 100, currentPageNum = 10, totalPagesCount = 11", inject(function(momPaginator, gitHubService) {
+        it("should NOT have more data with total_count set to 100, currentPageNum = 10, totalPagesCount = 11", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond({"total_count": 100});
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
             paginator.promise.then(function(){
 
                 paginator.currentPageNum = 10;
@@ -302,10 +302,10 @@ describe('Service: gitHubAPI', function () {
 
         var paginator;
 
-        it("should successfully call another page of data when next is called and currentPageNum = 1, and set currentPageNum === 2", inject(function(momPaginator, gitHubService) {
+        it("should successfully call another page of data when next is called and currentPageNum = 1, and set currentPageNum === 2", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
             $httpBackend.flush();
 
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=2&per_page=10&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
@@ -319,10 +319,10 @@ describe('Service: gitHubAPI', function () {
         }));
 
 
-        it("should fail to call another page of data using next() when at the end of the pages", inject(function(momPaginator, gitHubService) {
+        it("should fail to call another page of data using next() when at the end of the pages", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
             $httpBackend.flush();
 
             paginator.totalItemsCount = 100;
@@ -339,14 +339,14 @@ describe('Service: gitHubAPI', function () {
         }));
 
 
-        it("should succesfully retrieve the last page of data using next()", inject(function(momPaginator, gitHubService) {
+        it("should succesfully retrieve the last page of data using next()", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
             // getData URL:
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=10&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
 
             paginator.promise.then(function(){
                 expect(paginator.pageExists(paginator.currentPageNum + 1)).toBeTruthy();
@@ -373,10 +373,10 @@ describe('Service: gitHubAPI', function () {
 
         var paginator;
 
-        it("should successfully call another page of data when prev is called and currentPageNum = 5", inject(function(momPaginator, gitHubService) {
+        it("should successfully call another page of data when prev is called and currentPageNum = 5", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
             $httpBackend.flush();
 
             paginator.totalItemsCount = 100;
@@ -394,10 +394,10 @@ describe('Service: gitHubAPI', function () {
         }));
 
 
-        it("should fail to call another page of data using prev() when on page 1", inject(function(momPaginator, gitHubService) {
+        it("should fail to call another page of data using prev() when on page 1", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
             $httpBackend.flush();
 
             paginator.totalItemsCount = 100;
@@ -413,10 +413,10 @@ describe('Service: gitHubAPI', function () {
         }));
 
 
-        it("should successfully call the first page of data when prev is called and currentPageNum = 2, and set currentPageNum to 1", inject(function(momPaginator, gitHubService) {
+        it("should successfully call the first page of data when prev is called and currentPageNum = 2, and set currentPageNum to 1", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
             $httpBackend.flush();
 
             paginator.totalItemsCount = 100;
@@ -444,10 +444,10 @@ describe('Service: gitHubAPI', function () {
 
         var paginator;
 
-        it("should call the first page when paginator.first() is called", inject(function(momPaginator, gitHubService) {
+        it("should call the first page when paginator.first() is called", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
             $httpBackend.flush();
 
             paginator.totalItemsCount = 100;
@@ -470,10 +470,10 @@ describe('Service: gitHubAPI', function () {
             $httpBackend.flush();
         }));
 
-        it("should call the last page when paginator.last() is called", inject(function(momPaginator, gitHubService){
+        it("should call the last page when paginator.last() is called", inject(function(momPaginator, gitHubData){
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
             $httpBackend.flush();
 
             paginator.totalItemsCount = 100;
@@ -506,10 +506,10 @@ describe('Service: gitHubAPI', function () {
 
         var paginator;
 
-        it("should set sortColumn = 'joined' and sortAscending =false when toggleSort(joined) is called", inject(function(momPaginator, gitHubService) {
+        it("should set sortColumn = 'joined' and sortAscending =false when toggleSort(joined) is called", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
             $httpBackend.flush();
             expect(paginator.sortAscending).toEqual(null);
 
@@ -524,10 +524,10 @@ describe('Service: gitHubAPI', function () {
             $httpBackend.flush();
         }));
 
-        it("should set sortColumn = 'joined' and sortAscending = true when toggleSort(joined) is called twice", inject(function(momPaginator, gitHubService) {
+        it("should set sortColumn = 'joined' and sortAscending = true when toggleSort(joined) is called twice", inject(function(momPaginator, gitHubData) {
             $httpBackend.when('GET', 'https://api.github.com/search/users?page=1&per_page=1&q=followers:%3E%3D0').respond(mockedTotalCountJsonData.fakeData);
 
-            paginator = momPaginator(gitHubService);
+            paginator = momPaginator(gitHubData);
             $httpBackend.flush();
             expect(paginator.sortAscending).toEqual(null);
 
